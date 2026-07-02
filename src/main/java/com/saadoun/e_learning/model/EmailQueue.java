@@ -18,34 +18,35 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "email_history")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmailHistory {
+public class EmailQueue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String recipient;
 
-    @Column(nullable = false)
-    private String subject;
-
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private EmailType emailType;
 
-    @Column(nullable = false)
+    private Long userId;
+
+    private Long courseId;
+
+    @Enumerated(EnumType.STRING)
+    private EmailStatus status;
+
+    private Integer attempts;
+
+    private LocalDateTime nextRetryAt;
+
     private LocalDateTime sentAt;
 
-    @PrePersist
-    public void prePersist() {
-        if (sentAt == null) {
-            sentAt = LocalDateTime.now();
-        }
-    }
+    private LocalDateTime createdAt;
+
+    @Column(length = 1000)
+    private String lastError;
 }
