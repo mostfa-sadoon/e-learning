@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: optional:file:.env[.properties],optional:file:./application-local.yaml,optional:classpath:application-local.yaml
+
   application:
     name: e-learning
 
@@ -24,9 +27,9 @@ spring:
 
   mail:
     host: sandbox.smtp.mailtrap.io
-    port: 2525
-    username: 83918b40900b31
-    password: 3b64cff60b85d8
+    port: 465
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
