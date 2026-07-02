@@ -4,6 +4,8 @@ package com.saadoun.e_learning.service;
 import com.saadoun.e_learning.dto.StudentDto;
 import com.saadoun.e_learning.dto.req.EnrollReqDto;
 import com.saadoun.e_learning.dto.req.StudentReqDto;
+import com.saadoun.e_learning.event.EnrollmentCreatedEvent;
+import com.saadoun.e_learning.event.publisher.EnrollmentEventPublisher;
 import com.saadoun.e_learning.mapper.StudentMapper;
 import com.saadoun.e_learning.model.Course;
 import com.saadoun.e_learning.model.Enrollment;
@@ -13,9 +15,15 @@ import com.saadoun.e_learning.repositories.CourseRepository;
 import com.saadoun.e_learning.repositories.EnrollmentRepository;
 import com.saadoun.e_learning.repositories.StudentRepository;
 import com.saadoun.e_learning.dto.projection.StudentCourseRowProjection;
+import com.saadoun.e_learning.service.email.AbstractEmail;
+import com.saadoun.e_learning.service.email.EmailFactory;
+import com.saadoun.e_learning.service.email.EmailService;
+import com.saadoun.e_learning.service.email.EmailType;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StudentService {
 
 
@@ -41,6 +50,14 @@ public class StudentService {
 
       @Autowired
       StudentMapper studentMapper;
+
+      @Autowired
+      EmailFactory emailFactory;
+
+      @Autowired
+      EmailService emailService;
+
+      private final ApplicationEventPublisher eventPublisher;
 
       public StudentDto getByIdWithCourses(Long id){
 
@@ -120,6 +137,11 @@ public class StudentService {
                   .course(course)
                   .build();
           enrollmentRepository.save(enrollment);
+
+          eventPublisher.publishEvent(new EnrollmentCreatedEvent(student,course));
+
+
+
           return enrollment;
       }
 

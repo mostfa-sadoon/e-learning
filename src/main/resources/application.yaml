@@ -22,6 +22,18 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: 83918b40900b31
+    password: 3b64cff60b85d8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 management:
   endpoints:
     web:
@@ -38,4 +50,18 @@ info:
 
 upload:
   path: uploads/
+
+
+
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: your_email@gmail.com
+#    password: your_app_password
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
 
